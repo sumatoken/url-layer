@@ -14,6 +14,11 @@ const Home: NextPage = () => {
   if (link.data) console.log(link.data);
   return (
     <form>
+      {link.data && (
+        <span className="font-medium mr-2 text-center text-red-500">
+          {String(link.data.link)}
+        </span>
+      )}
       <div className="w-full flex flex-col items-center justify-center gap-4">
         <div className="flex flex-row justify-items-stretch items-center gap-6">
           <input
