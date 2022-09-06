@@ -9,3 +9,24 @@ datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")
 }
+
+model Campaign {
+  id        Int      @id @default(autoincrement())
+  url       String   @unique
+  slug      String   @unique
+  link      Link?
+  createdAt DateTime @default(now())
+
+  @@index([slug])
+}
+
+model Link {
+  id         Int      @id @default(autoincrement())
+  url        String   @unique
+  slug       String   @unique
+  campaignId Int      @unique
+  campaign   Campaign @relation(fields: [campaignId], references: [id])
+  createdAt  DateTime @default(now())
+
+  @@index([slug])
+}
