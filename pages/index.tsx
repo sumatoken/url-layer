@@ -8,7 +8,11 @@ import { trpc } from "../utils/trpc";
 
 const Home: NextPage = () => {
   const [wantOptions, setwantOptions] = useState(false);
-  const link = trpc.useQuery(["getLink", { link: "https://facebook.com" }]);
+  const link = trpc.useQuery(["getLink", { link: "https://facebook.com" }], {
+    refetchOnReconnect: false,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+  });
 
   if (link.isLoading) console.log("loading");
   if (link.data) console.log(link.data);
