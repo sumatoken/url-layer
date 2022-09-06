@@ -19,7 +19,7 @@ const appRouter = trpc
       link: z.string().url({ message: "Please provide a valid Campaign link" }),
     }),
     async resolve(req) {
-      return { status: "generated" };
+      return { status: "generated", generatedLink: "newlinkhabibi" };
     },
   });
 

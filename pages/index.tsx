@@ -8,29 +8,31 @@ import { trpc } from "../utils/trpc";
 
 const Home: NextPage = () => {
   const [wantOptions, setwantOptions] = useState(false);
-  const link = trpc.useQuery(["getLink", { link: "https://facebook.com" }], {
-    refetchOnReconnect: false,
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-  });
+  const [campaignLink, setCampaignLink] = useState("");
 
-  if (link.isLoading) console.log("loading");
-  if (link.data) console.log(link.data);
+  const createLink = trpc.useMutation(["createLink"]);
+
   return (
-    <form>
-      {link.data && (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        createLink.mutate({ link: campaignLink });
+      }}
+    >
+      {createLink.isSuccess && (
         <span className="font-medium mr-2 text-center text-red-500">
-          {String(link.data.link)}
+          {String(createLink.data.generatedLink)}
         </span>
       )}
       <div className="w-full flex flex-col items-center justify-center gap-4">
         <div className="flex flex-row justify-items-stretch items-center gap-6">
           <input
-            type="search"
-            id="search"
+            type="url"
+            id="campaign_link"
             className="p-4 pl-10 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 "
             placeholder="Campaign page link"
             required
+            onChange={(e) => setCampaignLink(e.target.value)}
           />
           <button
             type="button"
