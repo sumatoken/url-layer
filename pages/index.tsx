@@ -4,9 +4,14 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import styles from "../styles/Home.module.css";
+import { trpc } from "../utils/trpc";
 
 const Home: NextPage = () => {
   const [wantOptions, setwantOptions] = useState(false);
+  const link = trpc.useQuery(["getLink", { link: "https://facebook.com" }]);
+
+  if (link.isLoading) console.log("loading");
+  if (link.data) console.log(link.data);
   return (
     <form>
       <div className="w-full flex flex-col items-center justify-center gap-4">
