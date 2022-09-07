@@ -68,7 +68,7 @@ const Home: NextPage = () => {
         )}
         <button
           type="submit"
-          className="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 "
+          className="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-4 py-2 mb-2 dark:bg-blue-600 "
         >
           Generate
         </button>
