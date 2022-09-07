@@ -1,3 +1,4 @@
+import { resolve } from "path";
 import { prisma } from "./../../../lib/prisma";
 import * as trpc from "@trpc/server";
 import * as trpcNext from "@trpc/server/adapters/next";
@@ -6,11 +7,12 @@ import { Prisma } from "@prisma/client";
 const appRouter = trpc
   .router()
   .query("getLinks", {
-    async resolve({ input }) {
+    async resolve() {
       try {
         const links = await prisma.link.findMany({
           select: {
             url: true,
+            campaign: true,
           },
         });
         if (links) {
@@ -26,6 +28,30 @@ const appRouter = trpc
         }
         throw e;
       }
+    },
+  })
+  .query("getLink", {
+    input: z.object({
+      slug: z.string(),
+    }),
+    async resolve({ input }) {
+      const link = await prisma.link.findUnique({
+        where: {
+          slug: input.slug,
+        },
+        include: {
+          campaign: true,
+        },
+      });
+
+      if (!link) {
+        // The .code property can be accessed in a type-safe manner
+        throw new trpc.TRPCError({
+          code: "CONFLICT",
+          message: "Link cannot be found",
+        });
+      }
+      return { link };
     },
   })
   .mutation("createLink", {
@@ -66,6 +92,15 @@ const appRouter = trpc
       }
 
       // The .code property can be accessed in a type-safe manner
+    },
+  })
+  .mutation("logVisitor", {
+    input: z.object({
+      ip: z.string(),
+      location: z.string(),
+    }),
+    async resolve({ input }) {
+      return { input };
     },
   });
 

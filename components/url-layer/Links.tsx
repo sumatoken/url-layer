@@ -1,3 +1,5 @@
+import { Campaign } from "@prisma/client";
+import Link from "next/link";
 import React from "react";
 
 /* 
@@ -12,13 +14,13 @@ import React from "react";
 ]
 
 */
-type LinkType = { links: { url: string }[] };
+type LinkType = { links: { url: string; campaign: Campaign }[] };
 export default function Links({ links }: LinkType) {
   return (
     <div className="flex flex-col gap-3">
       {links.map((link, key) => (
         <span key={key} className="font-medium mr-2 text-center text-blue-500">
-          {link.url}
+          <Link href={link.url}>{link.url}</Link>
         </span>
       ))}
     </div>

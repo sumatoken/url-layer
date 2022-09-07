@@ -1,30 +1,40 @@
 import type { NextPage } from "next";
-import Head from "next/head";
-import Image from "next/image";
-import { useRouter } from "next/router";
 import { useState } from "react";
 import Links from "../components/url-layer/Links";
-import styles from "../styles/Home.module.css";
 import { trpc } from "../utils/trpc";
 
 const Home: NextPage = () => {
   const [wantOptions, setwantOptions] = useState(false);
   const [campaignLink, setCampaignLink] = useState("");
+  const trpcUtils = trpc.useContext();
   const getLinks = trpc.useQuery(["getLinks"], {
     refetchOnReconnect: false, // replacement for enable: false which isn't respected.
     refetchOnMount: false,
     refetchOnWindowFocus: false,
   });
-  const createLink = trpc.useMutation(["createLink"]);
+  const createLink = trpc.useMutation(["createLink"], {
+    onSuccess() {
+      trpcUtils.invalidateQueries(["getLinks"]);
+      alert("link created");
+    },
+  });
 
+  const slugFromCampaignLink = (campaignLink: string) => {
+    /**
+     * This campaignLink may contain UTM tags
+     */
+    let campaignSlug = campaignLink.split("/")[5];
+    campaignSlug = campaignSlug.split("?")[0];
+    return campaignSlug;
+  };
   return (
     <form
       onSubmit={(e) => {
-        const campaignSlug = campaignLink.split("/")[5];
+        const campaignSlug = campaignLink.split("/")[5].split("?")[0];
+
         e.preventDefault();
-        console.log(campaignSlug);
         createLink.mutate({
-          campaignLink,
+          campaignLink: campaignLink.split("?")[0],
           campaignSlug,
         });
       }}
@@ -35,11 +45,6 @@ const Home: NextPage = () => {
         </span>
       ) : null}
 
-      {createLink.isSuccess && (
-        <span className="font-medium mr-2 text-center text-blue-500">
-          {createLink.data?.generatedLink?.url}
-        </span>
-      )}
       <div className="w-full flex flex-col items-center justify-center gap-4">
         <div className="flex flex-row justify-items-stretch items-center gap-6">
           <input
