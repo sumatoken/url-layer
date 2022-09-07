@@ -54,6 +54,14 @@ const appRouter = trpc
       return { link };
     },
   })
+  .query("getVisitorInfo", {
+    async resolve() {
+      const geoLocation = await fetch("http://ip-api.com/json").then((res) =>
+        res.json()
+      );
+      return { geoLocation };
+    },
+  })
   .mutation("createLink", {
     input: z.object({
       campaignLink: z.string(),
@@ -81,6 +89,7 @@ const appRouter = trpc
           return { status: "generated", generatedLink: campaign.link };
         }
       } catch (e) {
+        console.log(e);
         if (e instanceof Prisma.PrismaClientKnownRequestError) {
           // The .code property can be accessed in a type-safe manner
           throw new trpc.TRPCError({
@@ -97,9 +106,32 @@ const appRouter = trpc
   .mutation("logVisitor", {
     input: z.object({
       ip: z.string(),
-      location: z.string(),
+      country: z.string(),
+      city: z.string(),
+      slug: z.string(),
     }),
     async resolve({ input }) {
+      const logVisitor = await prisma.link.update({
+        where: {
+          slug: input.slug,
+        },
+        data: {
+          visitors: {
+            create: [
+              {
+                source: "facebook",
+                visitor: {
+                  create: {
+                    ip: input.ip,
+                    country: input.country,
+                    city: input.city,
+                  },
+                },
+              },
+            ],
+          },
+        },
+      });
       return { input };
     },
   });

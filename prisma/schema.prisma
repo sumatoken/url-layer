@@ -21,22 +21,33 @@ model Campaign {
 }
 
 model Link {
-  id         Int       @id @default(autoincrement())
-  url        String    @unique
-  slug       String    @unique
-  campaignId Int       @unique
-  campaign   Campaign  @relation(fields: [campaignId], references: [id])
-  visitors   Visitor[]
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  id         Int               @id @default(autoincrement())
+  url        String            @unique
+  slug       String            @unique
+  campaignId Int               @unique
+  campaign   Campaign          @relation(fields: [campaignId], references: [id])
+  visitors   VisitorsOnLinks[]
+  createdAt  DateTime          @default(now())
 
   @@index([slug])
 }
 
 model Visitor {
-  id        Int      @id @default(autoincrement())
+  id        Int               @id @default(autoincrement())
+  ip        String            @unique
+  city      String
+  country   String
+  links     VisitorsOnLinks[]
+  createdAt DateTime          @default(now())
+}
+
+model VisitorsOnLinks {
   link      Link     @relation(fields: [linkId], references: [id])
   linkId    Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  visitor   Visitor  @relation(fields: [visitorId], references: [id])
+  visitorId Int
+  source    String
+  visitedAt DateTime @default(now())
+
+  @@id([linkId, visitorId])
 }
