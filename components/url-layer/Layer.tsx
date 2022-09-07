@@ -35,7 +35,7 @@ export default function Layer({ destination, slug, visitor }: LayerProps) {
         city: getVisitorInfo.data.geoLocation.city,
       });
     }
-  }, []);
+  }, [getVisitorInfo.data, router.query.slug, logVisitor]);
 
   return <h1>Loading...</h1>;
 }
