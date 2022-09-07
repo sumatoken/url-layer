@@ -13,6 +13,7 @@ const appRouter = trpc
           select: {
             url: true,
             campaign: true,
+            visitors: true,
           },
         });
         if (links) {
@@ -45,7 +46,6 @@ const appRouter = trpc
       });
 
       if (!link) {
-        // The .code property can be accessed in a type-safe manner
         throw new trpc.TRPCError({
           code: "CONFLICT",
           message: "Link cannot be found",
@@ -132,7 +132,7 @@ const appRouter = trpc
           },
         },
       });
-      return { input };
+      return logVisitor;
     },
   });
 

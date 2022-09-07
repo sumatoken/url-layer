@@ -34,7 +34,7 @@ model Link {
 
 model Visitor {
   id        Int               @id @default(autoincrement())
-  ip        String            @unique
+  ip        String
   city      String
   country   String
   links     VisitorsOnLinks[]

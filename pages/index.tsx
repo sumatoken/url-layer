@@ -18,15 +18,6 @@ const Home: NextPage = () => {
       alert("link created");
     },
   });
-
-  const slugFromCampaignLink = (campaignLink: string) => {
-    /**
-     * This campaignLink may contain UTM tags
-     */
-    let campaignSlug = campaignLink.split("/")[5];
-    campaignSlug = campaignSlug.split("?")[0];
-    return campaignSlug;
-  };
   return (
     <form
       onSubmit={(e) => {
@@ -45,7 +36,7 @@ const Home: NextPage = () => {
         </span>
       ) : null}
 
-      <div className="w-full flex flex-col items-center justify-center gap-4">
+      <div className="w-full flex flex-col items-center justify-center gap-4 mt-24">
         <div className="flex flex-row justify-items-stretch items-center gap-6">
           <input
             type="url"
