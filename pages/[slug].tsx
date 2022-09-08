@@ -1,9 +1,8 @@
 import type { NextPage } from "next";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
-import Layer from "../components/url-layer/Layer";
 import { trpc } from "../utils/trpc";
-
+const Layer = dynamic(() => import("../components/url-layer/Layer"));
 const Slug: NextPage = () => {
   const router = useRouter();
 
