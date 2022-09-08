@@ -4,6 +4,7 @@ import * as trpc from "@trpc/server";
 import * as trpcNext from "@trpc/server/adapters/next";
 import { z } from "zod";
 import { Prisma } from "@prisma/client";
+import { getBaseUrl } from "../../_app";
 const appRouter = trpc
   .router()
   .query("getLinks", {
@@ -75,7 +76,7 @@ const appRouter = trpc
             slug: input.campaignSlug,
             link: {
               create: {
-                url: `http://localhost:3000/${input.campaignSlug}`,
+                url: `${getBaseUrl()}/${input.campaignSlug}`,
                 slug: input.campaignSlug,
               },
             },
