@@ -46,9 +46,3 @@ const Slug: NextPage = () => {
   );
 };
 export default Slug;
-
-/* <Layer
-destination={getLink.data?.link.campaign.url as string}
-slug={router.query.slug as string}
-visitor={getVisitorInfo.data as any}
-/> */

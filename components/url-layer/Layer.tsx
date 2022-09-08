@@ -11,11 +11,6 @@ interface LayerProps {
 
 export default function Layer({ destination, slug, visitor }: LayerProps) {
   const router = useRouter();
-  const getVisitorInfo = trpc.useQuery(["getVisitorInfo"], {
-    refetchOnReconnect: false, // replacement for enable: false which isn't respected.
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-  });
 
   const logVisitor = trpc.useMutation(["logVisitor"], {
     onSuccess() {
@@ -23,19 +18,15 @@ export default function Layer({ destination, slug, visitor }: LayerProps) {
     },
     ssr: false,
   });
-  logVisitor.isLoading ? console.log("loding") : null;
+  logVisitor.isLoading ? console.log("loading") : null;
   useEffect(() => {
-    if (getVisitorInfo.data && router.query.slug) {
-      console.log(getVisitorInfo.data);
-
-      logVisitor.mutate({
-        ip: getVisitorInfo.data.geoLocation.query,
-        slug: String(router.query.slug),
-        country: getVisitorInfo.data.geoLocation.country,
-        city: getVisitorInfo.data.geoLocation.city,
-      });
-    }
-  }, [getVisitorInfo.data, router.query.slug, logVisitor]);
+    logVisitor.mutate({
+      ip: visitor.geoLocation.query,
+      slug: String(slug),
+      country: visitor.geoLocation.country,
+      city: visitor.geoLocation.city,
+    });
+  }, []);
 
   return <h1>Loading...</h1>;
 }
